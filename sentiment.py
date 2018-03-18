@@ -11,6 +11,9 @@ import seaborn as sns
 # We import our access keys:
 from credentials import *    # This will allow us to use the keys as variables
 
+from textblob import TextBlob
+import re
+
 # API's setup:
 def twitter_setup():
     # Authentication and access using keys:
@@ -24,7 +27,7 @@ def twitter_setup():
 # create an extractor object:
 extractor = twitter_setup()
 
-tweets = tweepy.Cursor(extractor.search, q="jokowi", rpp=20, result_type="recent", include_entities=True, lang="id").items(20)
+tweets = tweepy.Cursor(extractor.search, q="refugees", rpp=20, result_type="recent", include_entities=True, lang="id").items(20)
 
 d = []
 
@@ -70,4 +73,30 @@ tfav.plot(figsize=(16,4), label="Likes", legend=True)
 tret.plot(figsize=(16,4), label="Retweets", legend=True)
 
 plt.show()
+
+def clean_tweet(tweet):
+    '''
+    Utility function to clean the text in a tweet by removing 
+    links and special characters using regex.
+    '''
+    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)", " ", tweet).split())
+
+def analize_sentiment(tweet):
+    '''
+    Utility function to classify the polarity of a tweet
+    using textblob.
+    '''
+    analysis = TextBlob(clean_tweet(tweet))
+    if analysis.sentiment.polarity > 0:
+        return 1
+    elif analysis.sentiment.polarity == 0:
+        return 0
+    else:
+        return -1
+
+# create a column with the result of the analysis:
+data['SA'] = np.array([ analize_sentiment(tweet) for tweet in data['Tweets'] ])
+
+# display the updated dataframe with the new column:
+display(data.head(10))
 

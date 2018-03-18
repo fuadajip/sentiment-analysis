@@ -1,3 +1,5 @@
 # ignore credentials.py and sentiment.r
 credentials.py
 sentiment.r
+
+credentials.pyc
