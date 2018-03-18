@@ -14,6 +14,8 @@ from credentials import *    # This will allow us to use the keys as variables
 from textblob import TextBlob
 import re
 
+import csv
+
 # API's setup:
 def twitter_setup():
     # Authentication and access using keys:
@@ -27,7 +29,7 @@ def twitter_setup():
 # create an extractor object:
 extractor = twitter_setup()
 
-tweets = tweepy.Cursor(extractor.search, q="refugees", rpp=20, result_type="recent", include_entities=True, lang="id").items(20)
+tweets = tweepy.Cursor(extractor.search, q="jokowi", rpp=20, result_type="recent", include_entities=True, lang="id").items(100)
 
 d = []
 
@@ -97,6 +99,46 @@ def analize_sentiment(tweet):
 # create a column with the result of the analysis:
 data['SA'] = np.array([ analize_sentiment(tweet) for tweet in data['Tweets'] ])
 
+# create a numpy vector mapped to labels:
+positive = 0
+neutral = 0
+negative = 0
+
+for sa in data['SA']:
+    if sa == 1:
+        positive = positive+1
+    elif sa == 0:
+        neutral = neutral+1
+    else:
+        negative = negative +1
+
+size_sa = [positive, neutral, negative]
+labels = 'Positive', 'Neutral', 'Negative'
+colors = ['green', 'gray', 'red']
+explode = (0, 0.1, 0.1)  # explode 1st slice
+
+print ("Total positive sentiment: {}".format(positive))
+print ("Total neutral sentiment: {}".format(neutral))
+print ("Total negative sentiment: {}".format(negative))
+
+# plt.pie(pie_data, explode=explode, labels=labels, colors=colors,
+#         autopct='%1.1f%%')
+ 
+# plt.axis('equal')
+# plt.show()
+
+
+objects = ('Positive', 'Neutral', 'Negative')
+y_pos = np.arange(len(objects))
+performance = size_sa
+ 
+plt.bar(y_pos, performance, align='center', alpha=0.5)
+plt.xticks(y_pos, objects)
+plt.ylabel('Number')
+plt.title('Sentiment Analysis')
+ 
+plt.show()
 # display the updated dataframe with the new column:
-display(data.head(10))
+# display(data.head(10))
+# print(data)
 
