@@ -29,7 +29,7 @@ def twitter_setup():
 # create an extractor object:
 extractor = twitter_setup()
 
-tweets = tweepy.Cursor(extractor.search, q="jokowi", rpp=20, result_type="recent", include_entities=True, lang="id").items(100)
+tweets = tweepy.Cursor(extractor.search, q="muslim", rpp=20, result_type="recent", include_entities=True, lang="en").items(100)
 
 d = []
 
@@ -128,14 +128,21 @@ print ("Total negative sentiment: {}".format(negative))
 # plt.show()
 
 
-objects = ('Positive', 'Neutral', 'Negative')
-y_pos = np.arange(len(objects))
-performance = size_sa
+# objects = ('Positive', 'Neutral', 'Negative')
+# y_pos = np.arange(len(objects))
+# performance = size_sa
  
-plt.bar(y_pos, performance, align='center', alpha=0.5)
-plt.xticks(y_pos, objects)
-plt.ylabel('Number')
-plt.title('Sentiment Analysis')
+# plt.bar(y_pos, performance, align='center', alpha=0.5)
+# plt.xticks(y_pos, objects)
+# plt.ylabel('Number')
+# plt.title('Sentiment Analysis')
+
+
+labels = 'Positive', 'Neutral', 'Negative'
+color = ['yellowgreen','gray','lightcoral']
+performance = size_sa
+explode = (0.1, 0.1, 0.1)
+plt.pie(performance,autopct='%1.1f%%',colors=color, labels=labels , shadow= True,explode = explode , startangle=140)
  
 plt.show()
 # display the updated dataframe with the new column:
